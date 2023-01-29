@@ -16,13 +16,22 @@ const onTimeUpdate = throttle(function (data) {
 
 player.on('timeupdate', onTimeUpdate);
 
-const getSavedTime = function () {
-  try {
-    const savedTime = localStorage.getItem(STORAGE_KEY);
-    return JSON.parse(savedTime).seconds;
-  } catch (error) {
-    console.error(error);
-  };
+const savedTime = getSavedTime(STORAGE_KEY);
+checkSavedTime();
+
+function checkSavedTime() {
+  if (savedTime) {
+    player.setCurrentTime(savedTime.seconds);
+  }
 };
 
-player.setCurrentTime(getSavedTime());
+function getSavedTime (key) {
+    try {
+    const serializedState = localStorage.getItem(key);
+    return serializedState === null ? undefined : JSON.parse(serializedState);
+  } catch (err) {
+    console.error(err);
+    };
+};
+
+
